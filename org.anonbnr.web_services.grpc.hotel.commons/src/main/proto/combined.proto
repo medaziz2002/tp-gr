@@ -1,0 +1,189 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+package combined.grpc;
+
+// Service for Booking
+service BookingService {
+  rpc rechercherHotels(HotelSearchRequest) returns (HotelSearchResponseList);
+  rpc hotelByInformations(HotelInfoRequest) returns (HotelInfoResponse);
+  rpc SaveCardInfo(SaveCardRequest) returns (SaveCardResponse);
+  rpc GetCardInfoByClient(ClientFilterRequest) returns (ClientCardResponse);
+  rpc ajouterReservation(ReservationRequest) returns (ReservationResponse);
+  rpc createUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc authenticateUser(AuthRequest) returns (AuthResponse);
+}
+
+
+
+
+service NavigoService {
+  rpc rechercherHotels(HotelSearchRequest) returns (HotelSearchResponseList);
+  rpc hotelByInformations(HotelInfoRequest) returns (HotelInfoResponse);
+  rpc SaveCardInfo(SaveCardRequest) returns (SaveCardResponse);
+  rpc GetCardInfoByClient(ClientFilterRequest) returns (ClientCardResponse);
+  rpc ajouterReservation(ReservationRequest) returns (ReservationResponse);
+  rpc createUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc authenticateUser(AuthRequest) returns (AuthResponse);
+}
+
+
+
+
+
+
+// Service for Hotels
+service HotelService {
+  rpc rechercherHotel(HotelSearchRequest) returns (HotelSearchResponse);
+  rpc rechercherHotelByInformations(HotelInfoRequest) returns (HotelInfoResponse);
+  rpc reserver(ReservationRequest) returns (ReservationResponse);
+  rpc rechercherHotelEtChambre(HotelInfoRequest) returns (HotelInfoResponse);
+  rpc ping (PingRequest) returns (PingResponse);
+}
+
+
+
+
+message PingRequest {
+  string message = 1;
+}
+
+message PingResponse {
+  string response = 1;
+}
+
+// Shared message types
+message HotelSearchRequest {
+  string position = 1;        // Location (city or country) to filter hotels
+  int32 taille = 2;           // Minimum number of beds required
+  string nomAgence = 3;       // Name of the booking agency
+  double etoiles = 4;         // Minimum number of stars (rating)
+  string dateArrivee = 5;     // Check-in date in YYYY-MM-DD format
+  string dateDepart = 6;      // Check-out date in YYYY-MM-DD format
+  double prixMin = 7;         // Minimum price per night
+  double prixMax = 8;         // Maximum price per night
+}
+
+message HotelSearchResponse {
+  string nomAgence = 1;       // Name of the booking agency
+  string nomHotel = 2;        // Name of the hotel
+  double nbetoile = 3;        // Hotel rating (number of stars)
+  string pays = 4;            // Country where the hotel is located
+  string ville = 5;           // City where the hotel is located
+  string rue = 6;             // Street address of the hotel
+  string codePostal = 7;      // Postal code of the hotel
+  string positionGps = 8;     // GPS coordinates of the hotel
+  string lieu_dit = 9;        // Specific location or landmark (if any)
+  repeated ChambreDto chambres = 10; // List of available rooms
+}
+
+message HotelSearchResponseList {
+  repeated HotelSearchResponse hotels = 1; // List of hotels matching the criteria
+}
+
+message HotelInfoRequest {
+  string nomHotel = 1;        // Name of the hotel
+  int32 numeroChambre = 2;    // Room number in the hotel
+  string dateDebut = 3;       // Start date of the reservation in YYYY-MM-DD format
+  string dateFin = 4;         // End date of the reservation in YYYY-MM-DD format
+}
+
+message HotelInfoResponse {
+  string nomAgence = 1;       // Name of the booking agency
+  string nomHotel = 2;        // Name of the hotel
+  double nbetoile = 3;        // Hotel rating (number of stars)
+  string pays = 4;            // Country where the hotel is located
+  string ville = 5;           // City where the hotel is located
+  string rue = 6;             // Street address of the hotel
+  int32 codePostal = 7;       // Postal code of the hotel
+  string positionGps = 8;     // GPS coordinates of the hotel
+  string lieu_dit = 9;        // Specific location or landmark (if any)
+  ChambreDto chambre = 10;    // Detailed information about the room
+  double prixFinal = 11;      // Total price for the stay
+  int32 nbJours = 12;         // Number of days in the reservation
+}
+
+message ChambreDto {
+  int32 id = 1;               // Unique identifier for the room
+  int32 nbLits = 2;           // Number of beds in the room
+  double prix = 3;            // Price per night for the room
+  double prixFinalChambre = 4; // Final price for the room (calculated based on stay duration)
+}
+
+message ReservationRequest {
+  string nomHotel = 1;        // Name of the hotel
+  int32 roomNumber = 2;       // Room number to reserve
+  string dateDebut = 3;       // Check-in date in YYYY-MM-DD format
+  string dateFin = 4;         // Check-out date in YYYY-MM-DD format
+  string name = 5;            // First name of the customer
+  string prenom = 6;          // Last name of the customer
+  string phone = 7;           // Phone number of the customer
+}
+
+message ReservationResponse {
+  bool success = 1;           // Indicates whether the reservation was successful
+}
+
+
+
+
+// User Management Messages
+message CreateUserRequest {
+  string username = 1;        // New user's username
+  string password = 2;        // New user's password
+  string name = 3;            // First name of the user
+  string prenom = 4;          // Last name of the user
+  string phone = 5;           // User's phone number
+  int32 agenceId = 6;         // ID of the associated agency
+}
+
+
+message CreateUserResponse {
+  bool success = 1;           // Indicates whether the user was successfully created
+}
+
+
+
+message AuthResponse {
+  bool success = 1;           // Indicates whether authentication was successful
+}
+
+
+message AuthRequest {
+  string username = 1;
+  string password = 2;
+  int32  agenceId = 3;
+}
+
+
+
+// Message for saving card info
+message SaveCardRequest {
+  string numeroCarte = 1;
+  string cvv = 2;
+  string titulaireCarte = 3;
+  string dateExpiration = 4;
+  int64 clientId = 5; // Associated client ID
+}
+
+message SaveCardResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// Message for fetching card info by client
+message ClientFilterRequest {
+  string nom = 1;
+  string prenom = 2;
+  string numeroTelephone = 3;
+}
+
+message ClientCardResponse {
+  string numeroCarte = 1;
+  string cvv = 2;
+  string titulaireCarte = 3;
+  string dateExpiration = 4;
+  string clientNom = 5;
+  string clientPrenom = 6;
+  string clientTelephone = 7;
+}

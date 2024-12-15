@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="org.anonbnr.web_services.grpc.hotel_de_la_cite.commons" />
+        <module name="org.anonbnr.web_services.grpc.employees.commons" />
+        <module name="org.anonbnr.web_services.grpc.hotel.commons" />
+      </profile>
+    </annotationProcessing>
+  </component>
+</project>
